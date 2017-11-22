@@ -20,7 +20,7 @@ In addition it adds the following methods to the Creep type:
 Install via NPM in your local dev environment `npm install screeps-movement`.
 
 Or if you are using the screeps client then create a new module called 'screeps-movement' and 
-copy the contents of this file into it.
+copy the contents of [this](https://github.com/trebbettes-screeps/screeps-movement/blob/master/dist/movement.js) file into it.
 
 ## Usage
 Import the module in your `main` file. (At the top outside the loop)
@@ -113,7 +113,7 @@ if (container.store.energy > creep.carryCapacity || creep.pos.getRangeTo(contain
 Your creep will flee from the targets up to the distance specified (default 10).
 maxRooms can optionally be set (default 1).
 
-```typescript
+```
 const enemies = creep.room.find(FIND_HOSTILE_CREEPS);
 if (enemies.length > 0 && creep.pos.findInRange(enemies, 10).length) {
     creep.fleeFrom(enemies, 7);
