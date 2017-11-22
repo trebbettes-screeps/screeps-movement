@@ -1,7 +1,12 @@
 {
   "name": "screeps-movement",
-  "version": "1.0.93",
-  "description": "",
+  "version": "1.0.932",
+  "description": "A screeps movement library.",
+  "homepage": "https://github.com/trebbettes-screeps/screeps-movement",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/trebbettes-screeps/screeps-movement.git"
+  },
   "main": "./dist/movement.js",
   "types": "./typings/movement.d.ts",
   "scripts": {

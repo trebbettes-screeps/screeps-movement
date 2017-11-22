@@ -113,7 +113,7 @@ if (container.store.energy > creep.carryCapacity || creep.pos.getRangeTo(contain
 Your creep will flee from the targets up to the distance specified (default 10).
 maxRooms can optionally be set (default 1).
 
-```
+```typescript
 const enemies = creep.room.find(FIND_HOSTILE_CREEPS);
 if (enemies.length > 0 && creep.pos.findInRange(enemies, 10).length) {
     creep.fleeFrom(enemies, 7);

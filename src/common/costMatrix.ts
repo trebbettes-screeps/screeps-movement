@@ -1,5 +1,5 @@
 import {isSkRoom} from "./getRoomType";
-import {roomHostilityCheck} from "./rooms";
+import {roomHostilityCheck} from "./hostility";
 import {isBlocking, isTraversable} from "./roomPosition";
 import {CREEPS_MOVEMENT_CONFIG} from "../setConfig";
 

@@ -274,14 +274,14 @@ function bouncingOnExit(creep, data) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const getRoomType_1 = __webpack_require__(7);
-const rooms_1 = __webpack_require__(11);
+const hostility_1 = __webpack_require__(11);
 const roomPosition_1 = __webpack_require__(2);
 const setConfig_1 = __webpack_require__(0);
 function getCostMatrix(roomName, avoidCreepsIn, opts) {
     if (opts && opts.avoidRooms && _.contains(opts.avoidRooms, roomName)) {
         return false;
     }
-    if (rooms_1.roomHostilityCheck(roomName)) {
+    if (hostility_1.roomHostilityCheck(roomName)) {
         return false;
     }
     const room = Game.rooms[roomName];
