@@ -13,7 +13,7 @@ interface Creep {
 interface CreepsMovementConfig {
     allies?: string[];
     visualise?: boolean;
-    calculateWeights?: boolean;
+    calculateCarryWeight?: boolean;
     trackHostileRooms?: boolean;
     defaultStuckLimit?: number;
     staticCreepFilter?: (creep: Creep) => boolean | false;

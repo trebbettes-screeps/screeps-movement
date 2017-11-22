@@ -1,10 +1,9 @@
 const defaultConfig: CreepsMovementConfig = {
-    allies: [],
-    visualise: true,
-    calculateWeights: true,
-    trackHostileRooms: false,
-    staticCreepFilter: defaultIsStatic,
+    calculateCarryWeight: false,
     defaultStuckLimit: 5,
+    staticCreepFilter: defaultIsStatic,
+    trackHostileRooms: false,
+    visualise: true,
 };
 
 export let CREEPS_MOVEMENT_CONFIG: CreepsMovementConfig = defaultConfig;

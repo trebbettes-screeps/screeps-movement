@@ -40,18 +40,32 @@ import * as Movement from "screeps-movement";
 ### Configuration
 Optionally, you can apply some custom configuration. It isRecommended to do this immediately after the import statement.
 ```
-Movement.setConfig({
-  allies: ["SomeOf", "YourFriends", "Usernames"],
-  calculateWeights: true,
-  defaultStuckLimit: 5,
-  staticCreepFilter: (creep) => creep.memory.role === "miner",
-  trackHostileRooms: true,
-  visualise: true,
-});
+Movement.setConfig(config);
 ```
 
-#### creep.moveTo(target, opts?);
-The replacement `moveTo` may possibly work with any standard `moveTo` calls you make at present.
+Config Options:
+
+```
+interface CreepsMovementConfig {
+    allies?: string[];
+    visualise?: boolean;
+    calculateCarryWeight?: boolean;
+    trackHostileRooms?: boolean;
+    defaultStuckLimit?: number;
+    staticCreepFilter?: (creep: Creep) => boolean | false;
+}
+```
+Default Config: 
+``` 
+calculateCarryWeight: false,
+defaultStuckLimit: 5,
+staticCreepFilter: defaultIsStatic, // See setStatic() method below.
+trackHostileRooms: false,
+visualise: true,
+```
+
+### `creep.moveTo(target, opts?);`
+The replacement `moveTo` *should/might/possibly could* (who knows) work with any standard `moveTo` calls you make at present.
 However additional options have been added that you can now take advantage of.
 
 Any option you can currently pass in via either the `PathFinderOpts` or `MoveToOpts` as doucmented in the official screeps
@@ -76,12 +90,15 @@ worker.moveTo(target.pos, {
 
 ```
 miner.moveTo(source, {
+    avoidHostileRooms: true
     range: 1,
     pushPastFilter: (creep) => creep.memory.role === "hauler",
 });
 ```
 
-#### creep.moveToRoom(roomName, range?);
+You must enable `trackHostileRooms` in the global options for the `avoidHostileRooms` option to work.
+
+### `creep.moveToRoom(roomName, range?);`
 
 Your creep will move to the given room at the given range from room center (default 23).
 
@@ -92,7 +109,7 @@ creep.moveToRoom("W7N4", 10); // Move 15 tiles into the room.
 ```
 
 
-#### creep.moveOffRoad(towards?);
+### `creep.moveOffRoad(towards?);`
 
 Your creep will move off road.
 
@@ -109,7 +126,7 @@ if (container.store.energy > creep.carryCapacity || creep.pos.getRangeTo(contain
 }
 ```
 
-#### creep.fleeFrom(targets, distance?, maxRooms?);
+### `creep.fleeFrom(targets, distance?, maxRooms?);`
 Your creep will flee from the targets up to the distance specified (default 10).
 maxRooms can optionally be set (default 1).
 
@@ -117,5 +134,19 @@ maxRooms can optionally be set (default 1).
 const enemies = creep.room.find(FIND_HOSTILE_CREEPS);
 if (enemies.length > 0 && creep.pos.findInRange(enemies, 10).length) {
     creep.fleeFrom(enemies, 7);
+}
+```
+
+### `creep.setStatic(value?);`
+If you don't override the `staticCreepFilter` method in the global movement options (above).
+Then you can use this method to ensrure the creeps position is avoided by the pathfinder.
+
+```
+if (creep.memory.inPosition) {
+    creep.setStatic(false);
+    creep.moveTo(constructionSite);
+} else {
+    creep.setStatic();
+    creep.build(constructionSite);
 }
 ```

@@ -1,9 +1,6 @@
 import {CREEPS_MOVEMENT_CONFIG} from "../setConfig";
 
 export function getTerrainCosts(creep: Creep): { plains: number, swamp: number } {
-    if (!CREEPS_MOVEMENT_CONFIG.calculateWeights) {
-        return {plains: 2, swamp: 5};
-    }
     const data = getCreepWeightInfo(creep);
     const ratio = data.weighted / data.move;
     return {
@@ -18,8 +15,11 @@ function getSwampCost(ratio: number): number {
 }
 
 function getCreepWeightInfo(creep: Creep): { weighted: number, move: number } {
+    const calcCarry = CREEPS_MOVEMENT_CONFIG.calculateCarryWeight;
+
+    const unWeightedParts = calcCarry ? [MOVE, CARRY] : [MOVE];
     const bodyParts = _.countBy(creep.body,
-        (p: BodyPartDefinition) => p.type === MOVE || p.type === CARRY ? p.type : "weighted");
+        (p: BodyPartDefinition) => _.contains(unWeightedParts, p.type) ? p.type : "weighted");
 
     bodyParts.weighted = bodyParts.weighted || 0;
     return {

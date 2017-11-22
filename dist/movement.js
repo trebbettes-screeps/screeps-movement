@@ -72,12 +72,11 @@ module.exports =
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const defaultConfig = {
-    allies: [],
-    visualise: true,
-    calculateWeights: true,
-    trackHostileRooms: false,
-    staticCreepFilter: defaultIsStatic,
+    calculateCarryWeight: false,
     defaultStuckLimit: 5,
+    staticCreepFilter: defaultIsStatic,
+    trackHostileRooms: false,
+    visualise: true,
 };
 exports.CREEPS_MOVEMENT_CONFIG = defaultConfig;
 function setConfigWithDefaults(cfg) {
@@ -530,9 +529,6 @@ function pushPast(creep, opts, data) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const setConfig_1 = __webpack_require__(0);
 function getTerrainCosts(creep) {
-    if (!setConfig_1.CREEPS_MOVEMENT_CONFIG.calculateWeights) {
-        return { plains: 2, swamp: 5 };
-    }
     const data = getCreepWeightInfo(creep);
     const ratio = data.weighted / data.move;
     return {
@@ -546,7 +542,9 @@ function getSwampCost(ratio) {
     return Math.ceil(clamped * 5);
 }
 function getCreepWeightInfo(creep) {
-    const bodyParts = _.countBy(creep.body, (p) => p.type === MOVE || p.type === CARRY ? p.type : "weighted");
+    const calcCarry = setConfig_1.CREEPS_MOVEMENT_CONFIG.calculateCarryWeight;
+    const unWeightedParts = calcCarry ? [MOVE, CARRY] : [MOVE];
+    const bodyParts = _.countBy(creep.body, (p) => _.contains(unWeightedParts, p.type) ? p.type : "weighted");
     bodyParts.weighted = bodyParts.weighted || 0;
     return {
         move: bodyParts.move || 0,
