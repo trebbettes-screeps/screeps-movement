@@ -1,10 +1,10 @@
-declare module 'screeps-movement' {
+declare module "screeps-movement" {
     function setConfig(cfg: CreepsMovementConfig): void;
 }
 
 interface Creep {
     fleeFrom(targets: RoomObject[], dist?: number, maxRooms?: number): number;
-    moveOffRoad(towards?: RoomObject, maxRange?: number): number;
+    moveOffRoad(towards?: RoomObject | RoomPosition, maxRange?: number): number;
     moveToRoom(roomName: string): number;
     setStatic(value?: boolean): void;
     isStatic(): boolean;

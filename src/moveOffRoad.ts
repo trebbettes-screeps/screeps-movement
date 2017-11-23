@@ -1,11 +1,12 @@
-import {isTraversable} from "./common/roomPosition";
 import {getMoveData} from "./common/getMoveData";
+import {isTraversable} from "./common/roomPosition";
 
-Creep.prototype.moveOffRoad = function(towards?: RoomObject): number {
-  return moveOffRoad(this, towards);
+Creep.prototype.moveOffRoad = function(towards?: RoomObject | RoomPosition): number {
+  const pos = towards ? (towards as RoomObject).pos || towards : undefined;
+  return moveOffRoad(this, pos);
 };
 
-function moveOffRoad(creep: Creep, towards?: RoomObject): number {
+function moveOffRoad(creep: Creep, towards?: RoomPosition): number {
   const data = getMoveData(creep);
   if (data.offRoad === Game.time - 1) {
     data.offRoad = Game.time;
@@ -41,7 +42,7 @@ function appendMoveToPath(creep: Creep, data: MoveMemory): string | undefined {
   return data.path;
 }
 
-function withinRange(rp: RoomPosition, startPos: RoomPosition, towards?: RoomObject): boolean {
+function withinRange(rp: RoomPosition, startPos: RoomPosition, towards?: RoomPosition): boolean {
   if (!towards) {
     return true;
   }

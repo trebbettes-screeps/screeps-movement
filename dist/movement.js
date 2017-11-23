@@ -591,10 +591,11 @@ function roomIsHostile(room) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const roomPosition_1 = __webpack_require__(2);
 const getMoveData_1 = __webpack_require__(1);
+const roomPosition_1 = __webpack_require__(2);
 Creep.prototype.moveOffRoad = function (towards) {
-    return moveOffRoad(this, towards);
+    const pos = towards ? towards.pos || towards : undefined;
+    return moveOffRoad(this, pos);
 };
 function moveOffRoad(creep, towards) {
     const data = getMoveData_1.getMoveData(creep);
