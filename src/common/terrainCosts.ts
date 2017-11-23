@@ -1,4 +1,4 @@
-import {CREEPS_MOVEMENT_CONFIG} from "../setConfig";
+import {CREEPS_MOVEMENT_CONFIG} from "../config";
 
 export function getTerrainCosts(creep: Creep): { plains: number, swamp: number } {
     const data = getCreepWeightInfo(creep);

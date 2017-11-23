@@ -1,4 +1,4 @@
-import {CREEPS_MOVEMENT_CONFIG} from "../setConfig";
+import {CREEPS_MOVEMENT_CONFIG} from "../config";
 
 export function visualisePath(positions: RoomPosition[], color: string): void {
     if (!CREEPS_MOVEMENT_CONFIG.visualise) {

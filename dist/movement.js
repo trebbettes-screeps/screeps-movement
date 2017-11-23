@@ -173,109 +173,10 @@ exports.positionInDirection = positionInDirection;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const setConfig_1 = __webpack_require__(0);
-function visualisePath(positions, color) {
-    if (!setConfig_1.CREEPS_MOVEMENT_CONFIG.visualise) {
-        return;
-    }
-    const byRoom = _.groupBy(positions, (rp) => rp.roomName);
-    _.forEach(byRoom, (roomPositions, roomName) => {
-        if (Game.rooms[roomName]) {
-            const points = _.map(roomPositions, (p) => [p.x, p.y]);
-            Game.rooms[roomName].visual.poly(points, { lineStyle: "dashed", stroke: color });
-        }
-    });
-}
-exports.visualisePath = visualisePath;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function serialisePath(startPos, positions) {
-    let path = "";
-    if (positions.length === 0) {
-        return path;
-    }
-    for (let i = 0; i < positions.length; i++) {
-        const position = positions[i];
-        if (i === 0 && startPos.roomName === positions[i].roomName) {
-            path += startPos.getDirectionTo(position);
-        }
-        const nextPosition = positions[i + 1];
-        if (nextPosition && nextPosition.roomName === position.roomName) {
-            path += position.getDirectionTo(nextPosition);
-        }
-    }
-    return path;
-}
-exports.serialisePath = serialisePath;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const getMoveData_1 = __webpack_require__(1);
-const setConfig_1 = __webpack_require__(0);
-function positionIsBlocked(creep, target, range = 0) {
-    if (creep.pos.getRangeTo(target) > range) {
-        return false;
-    }
-    return target.lookFor(LOOK_CREEPS).length > 0;
-}
-function creepIsStuck(creep, opts, checkAvailability) {
-    const data = getMoveData_1.getMoveData(creep);
-    if (checkAvailability && positionIsBlocked(creep, checkAvailability, opts.range)) {
-        data.stuck = 0;
-        return false;
-    }
-    data.stuck = (data.stuck || 0) + 1;
-    const maxStuck = opts.maxStuck || setConfig_1.CREEPS_MOVEMENT_CONFIG.defaultStuckLimit || 5;
-    if (setConfig_1.CREEPS_MOVEMENT_CONFIG.visualise && data.stuck > 1 && data.stuck < maxStuck) {
-        const radius = data.stuck / (maxStuck - 1) / 2;
-        creep.room.visual.circle(creep.pos, { fill: "#680000", radius });
-    }
-    return !!data.stuck && data.stuck >= maxStuck;
-}
-exports.creepIsStuck = creepIsStuck;
-function creepHasMoved(creep) {
-    const data = getMoveData_1.getMoveData(creep);
-    if (bouncingOnExit(creep, data)) {
-        return false;
-    }
-    if (data.lastPosition) {
-        return !creep.pos.isEqualTo(data.lastPosition.x, data.lastPosition.y);
-    }
-    return false;
-}
-exports.creepHasMoved = creepHasMoved;
-function isExitTile(pos) {
-    return pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49;
-}
-function bouncingOnExit(creep, data) {
-    return isExitTile(creep.pos) && isExitTile(_.create(RoomPosition.prototype, data.lastPosition));
-}
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const getRoomType_1 = __webpack_require__(7);
-const hostility_1 = __webpack_require__(11);
+const config_1 = __webpack_require__(0);
+const getRoomType_1 = __webpack_require__(4);
+const hostility_1 = __webpack_require__(10);
 const roomPosition_1 = __webpack_require__(2);
-const setConfig_1 = __webpack_require__(0);
 function getCostMatrix(roomName, avoidCreepsIn, opts) {
     if (opts && opts.avoidRooms && _.contains(opts.avoidRooms, roomName)) {
         return false;
@@ -316,9 +217,9 @@ function getDefaultMatrix(room) {
             matrix.set(cs.pos.x, cs.pos.y, 0xff);
         }
     });
-    if (setConfig_1.CREEPS_MOVEMENT_CONFIG.staticCreepFilter) {
+    if (config_1.CREEPS_MOVEMENT_CONFIG.staticCreepFilter) {
         _.forEach(room.find(FIND_CREEPS), (c) => {
-            if (setConfig_1.CREEPS_MOVEMENT_CONFIG.staticCreepFilter(c)) {
+            if (config_1.CREEPS_MOVEMENT_CONFIG.staticCreepFilter(c)) {
                 matrix.set(c.pos.x, c.pos.y, 0xff);
             }
         });
@@ -362,7 +263,7 @@ exports.getSkMatrix = getSkMatrix;
 
 
 /***/ }),
-/* 7 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -383,19 +284,118 @@ exports.isSkRoom = _.memoize((roomName) => {
 
 
 /***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const config_1 = __webpack_require__(0);
+const getMoveData_1 = __webpack_require__(1);
+function positionIsBlocked(creep, target, range = 0) {
+    if (creep.pos.getRangeTo(target) > range) {
+        return false;
+    }
+    return target.lookFor(LOOK_CREEPS).length > 0;
+}
+function creepIsStuck(creep, opts, checkAvailability) {
+    const data = getMoveData_1.getMoveData(creep);
+    if (checkAvailability && positionIsBlocked(creep, checkAvailability, opts.range)) {
+        data.stuck = 0;
+        return false;
+    }
+    data.stuck = (data.stuck || 0) + 1;
+    const maxStuck = opts.maxStuck || config_1.CREEPS_MOVEMENT_CONFIG.defaultStuckLimit || 5;
+    if (config_1.CREEPS_MOVEMENT_CONFIG.visualise && data.stuck > 1 && data.stuck < maxStuck) {
+        const radius = data.stuck / (maxStuck - 1) / 2;
+        creep.room.visual.circle(creep.pos, { fill: "#680000", radius });
+    }
+    return !!data.stuck && data.stuck >= maxStuck;
+}
+exports.creepIsStuck = creepIsStuck;
+function creepHasMoved(creep) {
+    const data = getMoveData_1.getMoveData(creep);
+    if (bouncingOnExit(creep, data)) {
+        return false;
+    }
+    if (data.lastPosition) {
+        return !creep.pos.isEqualTo(data.lastPosition.x, data.lastPosition.y);
+    }
+    return false;
+}
+exports.creepHasMoved = creepHasMoved;
+function isExitTile(pos) {
+    return pos.x === 0 || pos.x === 49 || pos.y === 0 || pos.y === 49;
+}
+function bouncingOnExit(creep, data) {
+    return isExitTile(creep.pos) && isExitTile(_.create(RoomPosition.prototype, data.lastPosition));
+}
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function serialisePath(startPos, positions) {
+    let path = "";
+    if (positions.length === 0) {
+        return path;
+    }
+    for (let i = 0; i < positions.length; i++) {
+        const position = positions[i];
+        if (i === 0 && startPos.roomName === positions[i].roomName) {
+            path += startPos.getDirectionTo(position);
+        }
+        const nextPosition = positions[i + 1];
+        if (nextPosition && nextPosition.roomName === position.roomName) {
+            path += position.getDirectionTo(nextPosition);
+        }
+    }
+    return path;
+}
+exports.serialisePath = serialisePath;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const config_1 = __webpack_require__(0);
+function visualisePath(positions, color) {
+    if (!config_1.CREEPS_MOVEMENT_CONFIG.visualise) {
+        return;
+    }
+    const byRoom = _.groupBy(positions, (rp) => rp.roomName);
+    _.forEach(byRoom, (roomPositions, roomName) => {
+        if (Game.rooms[roomName]) {
+            const points = _.map(roomPositions, (p) => [p.x, p.y]);
+            Game.rooms[roomName].visual.poly(points, { lineStyle: "dashed", stroke: color });
+        }
+    });
+}
+exports.visualisePath = visualisePath;
+
+
+/***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+const config_1 = __webpack_require__(0);
 __webpack_require__(9);
+__webpack_require__(11);
 __webpack_require__(12);
-__webpack_require__(13);
 __webpack_require__(14);
 __webpack_require__(15);
-const setConfig_1 = __webpack_require__(0);
-exports.setConfig = setConfig_1.setConfigWithDefaults;
+exports.setConfig = config_1.setConfigWithDefaults;
 
 
 /***/ }),
@@ -405,14 +405,178 @@ exports.setConfig = setConfig_1.setConfigWithDefaults;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const visualisePath_1 = __webpack_require__(3);
-const serialisePath_1 = __webpack_require__(4);
+const costMatrix_1 = __webpack_require__(3);
 const creep_1 = __webpack_require__(5);
-const terrainCosts_1 = __webpack_require__(10);
-const roomPosition_1 = __webpack_require__(2);
-const costMatrix_1 = __webpack_require__(6);
 const getMoveData_1 = __webpack_require__(1);
-const getRoomType_1 = __webpack_require__(7);
+const serialisePath_1 = __webpack_require__(6);
+const visualisePath_1 = __webpack_require__(7);
+Creep.prototype.fleeFrom = function (targets, dist, maxRooms) {
+    return fleeFrom(this, targets, dist, maxRooms);
+};
+function fleeFrom(creep, targets, dist = 10, maxRooms = 1) {
+    const inRange = _.some(targets, (ro) => creep.pos.getRangeTo(ro) < dist);
+    let data = getMoveData_1.getMoveData(creep);
+    if (!inRange) {
+        creep.memory._move = {};
+        return OK;
+    }
+    if (data.fleeTick && data.fleeTick < Game.time - 1) {
+        data = getMoveData_1.getMoveData(creep, true);
+    }
+    data.fleeTick = Game.time;
+    if (!data.fleePath || !data.fleePath.length) {
+        data.stuck = 0;
+        data.fleePath = getPath(creep, targets, dist, maxRooms);
+    }
+    else if (creep_1.creepHasMoved(creep)) {
+        data.stuck = 0;
+        data.fleePath = trimFleePath(data);
+    }
+    else if (creep_1.creepIsStuck(creep, { maxStuck: 2 })) {
+        data.stuck = 0;
+        data.fleePath = getPath(creep, targets, dist, maxRooms);
+    }
+    data.lastPosition = creep.pos;
+    if (data.fleePath && data.fleePath.length > 0) {
+        const direction = Number(data.fleePath.slice(0, 1));
+        return creep.move(direction);
+    }
+    return ERR_NO_PATH;
+}
+function getPath(creep, targets, range, maxRooms) {
+    const goals = _.map(targets, (t) => ({ pos: t.pos, range }));
+    const pathResult = PathFinder.search(creep.pos, goals, {
+        flee: true,
+        maxRooms,
+        plainCost: 2,
+        roomCallback: (roomName) => costMatrix_1.getCostMatrix(roomName, creep.pos.roomName),
+    });
+    visualisePath_1.visualisePath(pathResult.path, "yellow");
+    return serialisePath_1.serialisePath(creep.pos, pathResult.path);
+}
+function trimFleePath(data) {
+    data.fleePath = data.fleePath || "";
+    return data.fleePath.slice(1, data.fleePath.length);
+}
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const config_1 = __webpack_require__(0);
+function roomHostilityCheck(roomName) {
+    return config_1.CREEPS_MOVEMENT_CONFIG.trackHostileRooms && Memory.rooms[roomName]._hostile;
+}
+exports.roomHostilityCheck = roomHostilityCheck;
+function setHostileRoom(room) {
+    if (config_1.CREEPS_MOVEMENT_CONFIG.trackHostileRooms) {
+        room.memory._hostile = roomIsHostile(room);
+    }
+}
+exports.setHostileRoom = setHostileRoom;
+function roomIsHostile(room) {
+    const c = room.controller;
+    if (!c || !c.owner || c.my || c.level < 3) {
+        return;
+    }
+    if (config_1.CREEPS_MOVEMENT_CONFIG.allies && _.contains(config_1.CREEPS_MOVEMENT_CONFIG.allies, c.owner.username)) {
+        return;
+    }
+    return true;
+}
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const getMoveData_1 = __webpack_require__(1);
+const roomPosition_1 = __webpack_require__(2);
+Creep.prototype.moveOffRoad = function (towards) {
+    const pos = towards ? towards.pos || towards : undefined;
+    return moveOffRoad(this, pos);
+};
+function moveOffRoad(creep, towards) {
+    const data = getMoveData_1.getMoveData(creep);
+    if (data.offRoad === Game.time - 1) {
+        data.offRoad = Game.time;
+        return OK;
+    }
+    const inOffroadPosition = isOffRoadPosition(creep.pos);
+    if (inOffroadPosition) {
+        data.path = appendMoveToPath(creep, data);
+        data.offRoad = Game.time;
+        return OK;
+    }
+    const positions = getNearbyPositions(creep.pos);
+    const validPositions = _.filter(positions, (rp) => isOffRoadPosition(rp) && withinRange(rp, creep.pos, towards) && noCreep(rp));
+    if (validPositions.length) {
+        data.offRoadFrom = creep.pos;
+        return creep.move(creep.pos.getDirectionTo(validPositions[0]));
+    }
+    else if (towards) {
+        return creep.moveTo(towards, { range: 1 });
+    }
+    return ERR_NO_PATH;
+}
+function appendMoveToPath(creep, data) {
+    if (data.offRoadFrom) {
+        const path = data.path ? data.path.slice(1, data.path.length) : "";
+        const newPath = creep.pos.getDirectionTo(data.offRoadFrom.x, data.offRoadFrom.y) + path;
+        data.lastPosition = undefined;
+        data.offRoadFrom = undefined;
+        return newPath;
+    }
+    return data.path;
+}
+function withinRange(rp, startPos, towards) {
+    if (!towards) {
+        return true;
+    }
+    return rp.getRangeTo(towards) <= startPos.getRangeTo(towards);
+}
+function noCreep(rp) {
+    return rp.lookFor(LOOK_CREEPS).length === 0;
+}
+function isOffRoadPosition(rp) {
+    return roomPosition_1.isTraversable(rp) &&
+        !_.some(rp.lookFor(LOOK_STRUCTURES), (s) => s instanceof StructureRoad);
+}
+function getNearbyPositions(startPos) {
+    const positions = [];
+    const offsets = [-1, 0, 1];
+    _.forEach(offsets, (x) => _.forEach(offsets, (y) => {
+        const p = new RoomPosition(startPos.x + x, startPos.y + y, startPos.roomName);
+        if (p.x > 0 && p.x < 49 && p.y > 0 && p.y < 49) {
+            positions.push(p);
+        }
+    }));
+    return positions;
+}
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const costMatrix_1 = __webpack_require__(3);
+const creep_1 = __webpack_require__(5);
+const getMoveData_1 = __webpack_require__(1);
+const getRoomType_1 = __webpack_require__(4);
+const roomPosition_1 = __webpack_require__(2);
+const serialisePath_1 = __webpack_require__(6);
+const terrainCosts_1 = __webpack_require__(13);
+const visualisePath_1 = __webpack_require__(7);
 Creep.prototype.moveTo = function (...args) {
     const xyMove = args[0] instanceof Number;
     const pos = xyMove ? new RoomPosition(args[0], args[1], this.pos.roomName) : args[0].pos || args[0];
@@ -522,13 +686,13 @@ function pushPast(creep, opts, data) {
 
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const setConfig_1 = __webpack_require__(0);
+const config_1 = __webpack_require__(0);
 function getTerrainCosts(creep) {
     const data = getCreepWeightInfo(creep);
     const ratio = data.weighted / data.move;
@@ -543,7 +707,7 @@ function getSwampCost(ratio) {
     return Math.ceil(clamped * 5);
 }
 function getCreepWeightInfo(creep) {
-    const calcCarry = setConfig_1.CREEPS_MOVEMENT_CONFIG.calculateCarryWeight;
+    const calcCarry = config_1.CREEPS_MOVEMENT_CONFIG.calculateCarryWeight;
     const unWeightedParts = calcCarry ? [MOVE, CARRY] : [MOVE];
     const bodyParts = _.countBy(creep.body, (p) => _.contains(unWeightedParts, p.type) ? p.type : "weighted");
     bodyParts.weighted = bodyParts.weighted || 0;
@@ -551,170 +715,6 @@ function getCreepWeightInfo(creep) {
         move: bodyParts.move || 0,
         weighted: bodyParts[CARRY] ? Math.ceil(_.sum(creep.carry) / 50) + bodyParts.weighted : bodyParts.weighted,
     };
-}
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const setConfig_1 = __webpack_require__(0);
-function roomHostilityCheck(roomName) {
-    return setConfig_1.CREEPS_MOVEMENT_CONFIG.trackHostileRooms && Memory.rooms[roomName]._hostile;
-}
-exports.roomHostilityCheck = roomHostilityCheck;
-function setHostileRoom(room) {
-    if (setConfig_1.CREEPS_MOVEMENT_CONFIG.trackHostileRooms) {
-        room.memory._hostile = roomIsHostile(room);
-    }
-}
-exports.setHostileRoom = setHostileRoom;
-function roomIsHostile(room) {
-    const c = room.controller;
-    if (!c || !c.owner || c.my || c.level < 3) {
-        return;
-    }
-    if (setConfig_1.CREEPS_MOVEMENT_CONFIG.allies && _.contains(setConfig_1.CREEPS_MOVEMENT_CONFIG.allies, c.owner.username)) {
-        return;
-    }
-    return true;
-}
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const getMoveData_1 = __webpack_require__(1);
-const roomPosition_1 = __webpack_require__(2);
-Creep.prototype.moveOffRoad = function (towards) {
-    const pos = towards ? towards.pos || towards : undefined;
-    return moveOffRoad(this, pos);
-};
-function moveOffRoad(creep, towards) {
-    const data = getMoveData_1.getMoveData(creep);
-    if (data.offRoad === Game.time - 1) {
-        data.offRoad = Game.time;
-        return OK;
-    }
-    const inOffroadPosition = isOffRoadPosition(creep.pos);
-    if (inOffroadPosition) {
-        data.path = appendMoveToPath(creep, data);
-        data.offRoad = Game.time;
-        return OK;
-    }
-    const positions = getNearbyPositions(creep.pos);
-    const validPositions = _.filter(positions, (rp) => isOffRoadPosition(rp) && withinRange(rp, creep.pos, towards) && noCreep(rp));
-    if (validPositions.length) {
-        data.offRoadFrom = creep.pos;
-        return creep.move(creep.pos.getDirectionTo(validPositions[0]));
-    }
-    else if (towards) {
-        return creep.moveTo(towards, { range: 1 });
-    }
-    return ERR_NO_PATH;
-}
-function appendMoveToPath(creep, data) {
-    if (data.offRoadFrom) {
-        const path = data.path ? data.path.slice(1, data.path.length) : "";
-        const newPath = creep.pos.getDirectionTo(data.offRoadFrom.x, data.offRoadFrom.y) + path;
-        data.lastPosition = undefined;
-        data.offRoadFrom = undefined;
-        return newPath;
-    }
-    return data.path;
-}
-function withinRange(rp, startPos, towards) {
-    if (!towards) {
-        return true;
-    }
-    return rp.getRangeTo(towards) <= startPos.getRangeTo(towards);
-}
-function noCreep(rp) {
-    return rp.lookFor(LOOK_CREEPS).length === 0;
-}
-function isOffRoadPosition(rp) {
-    return roomPosition_1.isTraversable(rp) &&
-        !_.some(rp.lookFor(LOOK_STRUCTURES), (s) => s instanceof StructureRoad);
-}
-function getNearbyPositions(startPos) {
-    const positions = [];
-    const offsets = [-1, 0, 1];
-    _.forEach(offsets, (x) => _.forEach(offsets, (y) => {
-        const p = new RoomPosition(startPos.x + x, startPos.y + y, startPos.roomName);
-        if (p.x > 0 && p.x < 49 && p.y > 0 && p.y < 49) {
-            positions.push(p);
-        }
-    }));
-    return positions;
-}
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const getMoveData_1 = __webpack_require__(1);
-const visualisePath_1 = __webpack_require__(3);
-const serialisePath_1 = __webpack_require__(4);
-const creep_1 = __webpack_require__(5);
-const costMatrix_1 = __webpack_require__(6);
-Creep.prototype.fleeFrom = function (targets, dist, maxRooms) {
-    return fleeFrom(this, targets, dist, maxRooms);
-};
-function fleeFrom(creep, targets, dist = 10, maxRooms = 1) {
-    const inRange = _.some(targets, (ro) => creep.pos.getRangeTo(ro) < dist);
-    let data = getMoveData_1.getMoveData(creep);
-    if (!inRange) {
-        creep.memory._move = {};
-        return OK;
-    }
-    if (data.fleeTick && data.fleeTick < Game.time - 1) {
-        data = getMoveData_1.getMoveData(creep, true);
-    }
-    data.fleeTick = Game.time;
-    if (!data.fleePath || !data.fleePath.length) {
-        data.stuck = 0;
-        data.fleePath = getPath(creep, targets, dist, maxRooms);
-    }
-    else if (creep_1.creepHasMoved(creep)) {
-        data.stuck = 0;
-        data.fleePath = trimFleePath(data);
-    }
-    else if (creep_1.creepIsStuck(creep, { maxStuck: 2 })) {
-        data.stuck = 0;
-        data.fleePath = getPath(creep, targets, dist, maxRooms);
-    }
-    data.lastPosition = creep.pos;
-    if (data.fleePath && data.fleePath.length > 0) {
-        const direction = Number(data.fleePath.slice(0, 1));
-        return creep.move(direction);
-    }
-    return ERR_NO_PATH;
-}
-function getPath(creep, targets, range, maxRooms) {
-    const goals = _.map(targets, (t) => ({ pos: t.pos, range }));
-    const pathResult = PathFinder.search(creep.pos, goals, {
-        flee: true,
-        maxRooms,
-        plainCost: 2,
-        roomCallback: (roomName) => costMatrix_1.getCostMatrix(roomName, creep.pos.roomName),
-    });
-    visualisePath_1.visualisePath(pathResult.path, "yellow");
-    return serialisePath_1.serialisePath(creep.pos, pathResult.path);
-}
-function trimFleePath(data) {
-    data.fleePath = data.fleePath || "";
-    return data.fleePath.slice(1, data.fleePath.length);
 }
 
 
@@ -731,7 +731,7 @@ function moveToRoom(creep, roomName, range = 23) {
     return creep.moveTo(new RoomPosition(25, 25, roomName), {
         avoidSk: true,
         maxOps: 10000,
-        range: range,
+        range,
     });
 }
 

@@ -1,5 +1,5 @@
+import {CREEPS_MOVEMENT_CONFIG} from "../config";
 import {getMoveData} from "./getMoveData";
-import {CREEPS_MOVEMENT_CONFIG} from "../setConfig";
 
 function positionIsBlocked(creep: Creep, target: RoomPosition, range: number = 0): boolean {
     if (creep.pos.getRangeTo(target) > range) {

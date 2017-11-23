@@ -1,7 +1,7 @@
+import {CREEPS_MOVEMENT_CONFIG} from "../config";
 import {isSkRoom} from "./getRoomType";
 import {roomHostilityCheck} from "./hostility";
 import {isBlocking, isTraversable} from "./roomPosition";
-import {CREEPS_MOVEMENT_CONFIG} from "../setConfig";
 
 export function getCostMatrix(roomName: string, avoidCreepsIn?: string, opts?: MovementOptions): CostMatrix | boolean {
 

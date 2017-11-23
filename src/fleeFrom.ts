@@ -1,8 +1,8 @@
-import {getMoveData} from "./common/getMoveData";
-import {visualisePath} from "./common/visualisePath";
-import {serialisePath} from "./common/serialisePath";
-import {creepHasMoved, creepIsStuck} from "./common/creep";
 import {getCostMatrix} from "./common/costMatrix";
+import {creepHasMoved, creepIsStuck} from "./common/creep";
+import {getMoveData} from "./common/getMoveData";
+import {serialisePath} from "./common/serialisePath";
+import {visualisePath} from "./common/visualisePath";
 
 Creep.prototype.fleeFrom = function(targets: RoomObject[], dist?: number, maxRooms?: number): number {
     return fleeFrom(this, targets, dist, maxRooms);

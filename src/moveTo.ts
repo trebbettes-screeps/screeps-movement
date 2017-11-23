@@ -1,11 +1,11 @@
-import {visualisePath} from "./common/visualisePath";
-import {serialisePath} from "./common/serialisePath";
-import {creepHasMoved, creepIsStuck} from "./common/creep";
-import {getTerrainCosts} from "./common/terrainCosts";
-import {isTraversable, positionInDirection} from "./common/roomPosition";
 import {getCostMatrix} from "./common/costMatrix";
+import {creepHasMoved, creepIsStuck} from "./common/creep";
 import {getMoveData} from "./common/getMoveData";
 import {isSkRoom} from "./common/getRoomType";
+import {isTraversable, positionInDirection} from "./common/roomPosition";
+import {serialisePath} from "./common/serialisePath";
+import {getTerrainCosts} from "./common/terrainCosts";
+import {visualisePath} from "./common/visualisePath";
 
 Creep.prototype.moveTo = function(...args: any[]): any {
     const xyMove = args[0] instanceof Number;

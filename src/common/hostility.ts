@@ -1,4 +1,4 @@
-import {CREEPS_MOVEMENT_CONFIG} from "../setConfig";
+import {CREEPS_MOVEMENT_CONFIG} from "../config";
 
 export function roomHostilityCheck(roomName: string): boolean {
     return CREEPS_MOVEMENT_CONFIG.trackHostileRooms && Memory.rooms[roomName]._hostile;

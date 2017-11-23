@@ -1,8 +1,8 @@
-import "./moveTo";
-import "./moveOffRoad";
+import {setConfigWithDefaults} from "./config";
 import "./fleeFrom";
+import "./moveOffRoad";
+import "./moveTo";
 import "./moveToRoom";
 import "./setStatic";
-import {setConfigWithDefaults} from "./setConfig";
 
 export const setConfig = setConfigWithDefaults;
