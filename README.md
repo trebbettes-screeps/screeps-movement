@@ -15,6 +15,7 @@ In addition it adds the following methods to the Creep type:
 - moveToRoom
 - moveOffRoad
 - fleeFrom
+- setStatic
 
 ## Install:
 Install via NPM in your local dev environment `npm install screeps-movement`.
