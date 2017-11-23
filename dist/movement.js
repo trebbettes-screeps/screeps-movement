@@ -515,6 +515,7 @@ function pushPast(creep, opts, data) {
     if (otherData.lastMoveAttempt && otherData.lastMoveAttempt >= Game.time - 1) {
         return;
     }
+    data.lastPush = Game.time;
     otherCreep.move(otherCreep.pos.getDirectionTo(creep));
     otherCreep.memory._move = undefined;
 }

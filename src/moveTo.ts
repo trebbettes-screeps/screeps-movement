@@ -112,7 +112,7 @@ function pushPast(creep: Creep, opts: MovementOptions, data: MoveMemory): void {
         return;
     }
 
-    if (!data.path || (!data.stuck && data.lastPush !== Game.time -1)) {
+    if (!data.path || (!data.stuck && data.lastPush !== Game.time - 1)) {
         return;
     }
 
@@ -131,6 +131,7 @@ function pushPast(creep: Creep, opts: MovementOptions, data: MoveMemory): void {
         return;
     }
 
+    data.lastPush = Game.time;
     otherCreep.move(otherCreep.pos.getDirectionTo(creep));
     otherCreep.memory._move = undefined;
 }
