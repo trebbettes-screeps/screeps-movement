@@ -6,6 +6,7 @@ export function roomHostilityCheck(roomName: string): boolean {
 
 export function setHostileRoom(room: Room): void {
     if (CREEPS_MOVEMENT_CONFIG.trackHostileRooms) {
+        room.memory._hostile = room.memory._hostile || {};
         room.memory._hostile = roomIsHostile(room);
     }
 }

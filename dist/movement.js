@@ -474,6 +474,7 @@ function roomHostilityCheck(roomName) {
 exports.roomHostilityCheck = roomHostilityCheck;
 function setHostileRoom(room) {
     if (config_1.CREEPS_MOVEMENT_CONFIG.trackHostileRooms) {
+        room.memory._hostile = room.memory._hostile || {};
         room.memory._hostile = roomIsHostile(room);
     }
 }
