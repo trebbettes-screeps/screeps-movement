@@ -469,12 +469,11 @@ function trimFleePath(data) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __webpack_require__(0);
 function roomHostilityCheck(roomName) {
-    return config_1.CREEPS_MOVEMENT_CONFIG.trackHostileRooms && Memory.rooms[roomName]._hostile;
+    return config_1.CREEPS_MOVEMENT_CONFIG.trackHostileRooms && Memory.rooms[roomName] && Memory.rooms[roomName]._hostile;
 }
 exports.roomHostilityCheck = roomHostilityCheck;
 function setHostileRoom(room) {
     if (config_1.CREEPS_MOVEMENT_CONFIG.trackHostileRooms) {
-        room.memory._hostile = room.memory._hostile || {};
         room.memory._hostile = roomIsHostile(room);
     }
 }
